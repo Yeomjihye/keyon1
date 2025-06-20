@@ -3,9 +3,9 @@ package com.keyoninc.board.service;
 import com.keyoninc.board.entity.MemberDetail;
 
 public interface MemberDetailService {
-    MemberDetail findByUserId(String userId);
+    public MemberDetail findByUserId(String userId);
 
-    void save(MemberDetail detail);
+    public void save(MemberDetail detail);
 
-    void update(MemberDetail detail);
+    public void update(MemberDetail detail);
 }

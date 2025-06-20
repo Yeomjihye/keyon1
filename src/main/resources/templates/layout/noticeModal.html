@@ -1,0 +1,22 @@
+
+<div th:fragment="noticeModal">
+    <div class="modal" tabindex="-1" id="noticeModal">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="noticeModalTitle" th:text="${notice.subject}" >공지사항</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="닫기"></button>
+                </div>
+                <div class="modal-body" th:utext="${notice.content}">
+                    공지 내용이 표시됩니다.
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">닫기</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+
+</div>

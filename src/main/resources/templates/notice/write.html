@@ -54,7 +54,6 @@
                         th:text="${mode == 'write' ? '등록취소' : '수정취소'}">취소</button>
             </div>
 
-            
             <input type="hidden" name="num" th:if="${mode == 'update'}" th:value="${dto?.num}">
         </form>
     </div>

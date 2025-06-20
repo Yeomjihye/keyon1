@@ -38,8 +38,8 @@ public class MemberServiceImpl implements MemberService {
     }
 
 
-    @Override
     @Transactional
+    @Override
     public void insertMember(Member member, MemberDetail memberDetail) throws Exception {
 
         try {
@@ -54,9 +54,13 @@ public class MemberServiceImpl implements MemberService {
         } catch (Exception e) {
             log.info("insertMember : ", e);
 
-        }
+        }    
+    }
 
-        
+
+    @Override
+    public Member findByUserId(String userId) {
+        return memberRepository.findByUserId(userId);
     }
 
     

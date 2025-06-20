@@ -111,6 +111,5 @@ public Page<Board> listPage(String kwd, int currentPage, int size) {
         replyRepository.deleteById(replyNum);
     }
 
-
     
 }

@@ -68,7 +68,11 @@ public class MemberController {
     @RequestParam String userPwdConfirm,
     Model model) {
 
-        log.info("userId : {}", member.getUserId());
+         Member existing = memberService.findByUserId(member.getUserId());
+        if (existing != null) {
+            model.addAttribute("errorMsg", "이미 사용 중인 아이디입니다.");
+            return "member/join";
+}
 
         if (!member.getUserPwd().equals(userPwdConfirm)) {
             model.addAttribute("errorMsg", "비밀번호가 일치하지 않습니다.");

@@ -20,7 +20,7 @@ public interface BoardService {
     public void updateBoard(Board dto) throws Exception;
     public void deleteBoard(int num) throws Exception;
 
-    //댓글
+
     public void insertReply(Reply dto) throws Exception;
     public List<Reply> listReply(int num);
     public void deleteReply(int replyNum);
