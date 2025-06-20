@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>게시글 보기</title>
+
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+    <script>
+        function deleteOk() {
+            if(confirm('게시글을 삭제 하시겠습니까 ?')) {
+                let url = '[[|@{/bbs/delete/{num}(num=${dto.num}, kwd=${kwd})}|]]';
+                location.href = url;
+            }
+        }
+    </script>
+
+</head>
+<body>
+    <div class="container my-5" style="max-width: 800px;">
+        <h2 class="mb-4">게시글 상세</h2>
+
+        <div class="body-main">
+            <table class="table table-bordered">
+                <tbody>
+                <tr>
+                    <th style="width: 100px;">제목</th>
+                    <td th:text="${dto.subject}">제목</td>
+                </tr>
+                <tr>
+                    <th>작성자</th>
+                    <td th:text="${dto.name}">작성자</td>
+                </tr>
+                <tr>
+                    <th>내용</th>
+                    <td th:utext="${dto.content}">내용</td>
+                </tr>
+                </tbody>
+            </table>
+
+            <div class="d-flex justify-content-between my-3">
+                <div>
+                    <button type="button" class="btn btn-outline-primary"
+                            th:onclick="|location.href='@{/bbs/update/{num}(num=${dto.num})}'|">수정</button>
+                    <button type="button" class="btn btn-outline-danger" onclick="deleteOk()">삭제</button>
+                </div>
+                <div>
+                    <button type="button" class="btn btn-secondary"
+                            th:if="${#strings.isEmpty(kwd)}"
+                            th:onclick="|location.href='@{/bbs/list}'|">목록</button>
+                    <button type="button" class="btn btn-secondary"
+                            th:if="${not #strings.isEmpty(kwd)}"
+                            th:onclick="|location.href='@{/bbs/list(kwd=${kwd})}'|">목록</button>
+                </div>
+            </div>
+
+
+            <div class="reply mt-5">
+                <!-- 댓글 작성 폼 -->
+                <div class="card">
+                    <div class="card-header">
+                        댓글 작성
+                    </div>
+                    <div class="card-body">
+                        <form name="replyForm" method="post">
+                            <div class="mb-3">
+                                <input type="text" name="name" class="form-control" placeholder="작성자" required>
+                            </div>
+
+                            <div class="mb-3">
+                                <textarea class="form-control" name="content" rows="3" placeholder="댓글 내용" required></textarea>
+                            </div>
+
+                            <div class="text-end">
+                                <button type="button" class="btn btn-success btnSendReply">댓글 등록</button>
+                            </div>
+
+                            <input type="hidden" name="num" th:value="${dto.num}">
+                        </form>
+                    </div>
+                </div>
+
+                <!-- 댓글 목록 -->
+                <div class="mt-4" id="listReply"></div>
+            </div>
+
+        </div>
+
+    </div>
+
+    <script>
+        $(function () {
+            const num = $('input[name="num"]').val();
+            loadReplyList(num);
+
+            $('.btnSendReply').click(function () {
+                const $form = $(this).closest('form');
+
+                const name = $form.find('input[name="name"]').val().trim();
+                const content = $form.find('textarea[name="content"]').val().trim();
+
+                if (!name) {
+                    alert("작성자 이름을 입력하세요.");
+                    $form.find('input[name="name"]').focus();
+                    return;
+                }
+
+                if (!content) {
+                    alert("댓글 내용을 입력하세요.");
+                    $form.find('textarea[name="content"]').focus();
+                    return;
+                }
+
+                const url = '/bbs/insertReply';
+                const params = {name:name, content:content, num:num};
+
+                $.ajax({
+                    type:'POST',
+                    url: url,
+                    data: params,
+                    dataType: 'json',
+                    success: function(data) {
+                        if(data.state=== 'true') {
+                            alert("댓글이 등록되었습니다.");
+
+                            $form.find('input[name="name"]').val('');
+                            $form.find('textarea[name="content"]').val('');
+
+                            loadReplyList(num);
+
+                        } else {
+                            alert("댓글 등록에 실패했습니다");
+                        }
+                    },
+                    error: function(xhr, status, error) {
+                        console.error("댓글 등록 중 오류", error);
+                        alert("서버 오류가 발생했습니다.");
+                    }
+                });
+
+            });
+        });
+
+        function loadReplyList(num) {
+            $.ajax({
+                url: '/bbs/listReply?num=' + num,
+                type: 'GET',
+                success: function(data) {
+                    $('#listReply').html(data);
+                },
+                error: function() {
+                    alert("댓글 목록을 불러오는 데 실패했습니다.");
+                }
+            });
+        }
+
+        $(function() {
+            $('.reply').on('click', '.btn-delete-reply', function() {
+                const replyNum = $(this).data('reply-num');
+                const num = $('input[name="num"]').val();
+
+                if(!confirm("댓글을 삭제하시겠습니까?")) return;
+
+                $.ajax({
+                    type: 'POST',
+                    url: '/bbs/deleteReply',
+                    data: {replyNum: replyNum},
+                    dataType: 'json',
+                    success: function(data) {
+                        if(data.state === 'true') {
+                            alert("댓글이 삭제되었습니다.");
+                            loadReplyList(num);
+                        } else {
+                            alert("댓글 삭제에 실패했습니다.");
+                        }
+                    },
+                    error: function(xhr, status, error) {
+                        console.error("댓글 삭제 오류:", error);
+                        alert("서버 오류가 발생했습니다.");
+                    }
+                });
+
+            });
+        });
+
+    </script>
+    
+</body>
+</html>
