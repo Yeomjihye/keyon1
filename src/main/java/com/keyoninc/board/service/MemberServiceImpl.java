@@ -31,15 +31,12 @@ public class MemberServiceImpl implements MemberService {
             
         } catch (Exception e) {
             log.info("login:", e);
+            throw e;
         }
         return null;
         
     }
 
-    @Override
-    public void join(Member member) {
-        memberRepository.save(member);
-    }
 
     @Override
     @Transactional
@@ -51,7 +48,6 @@ public class MemberServiceImpl implements MemberService {
             memberRepository.save(member);
     
             memberDetail.setUserId(userId);
-            memberDetail.setMember(member);
 
             memberDetailRepository.save(memberDetail);
             

@@ -5,8 +5,6 @@ import java.time.LocalDate;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
 import lombok.Getter;
 import lombok.Setter;
@@ -20,10 +18,6 @@ public class MemberDetail {
     @Id
     @Column(name = "userId", length = 50)
     private String userId;
-
-    @OneToOne
-    @JoinColumn(name = "userId", referencedColumnName = "userId", insertable = false, updatable = false)
-    private Member member;
 
     @Column(name = "birth")
     private LocalDate birth;

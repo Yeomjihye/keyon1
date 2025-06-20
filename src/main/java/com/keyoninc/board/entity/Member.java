@@ -24,7 +24,7 @@ public class Member {
     @Column(name = "memberIdx")
     private int memberIdx;
 
-    @Column(name = "userId", nullable = false, unique = true, length = 50, insertable = false, updatable = false)
+    @Column(name = "userId", nullable = false, unique = true, length = 50)
     private String userId;
 
     @Column(name = "userPwd", nullable = false, length = 100)
@@ -46,6 +46,6 @@ public class Member {
     private LocalDateTime lastLogin;
 
     @OneToOne
-    @JoinColumn(name = "userId", referencedColumnName = "userId")
+    @JoinColumn(name = "userId", referencedColumnName = "userId", insertable = false, updatable = false)
     private MemberDetail memberDetail;
 }

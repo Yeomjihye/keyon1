@@ -28,10 +28,10 @@ import lombok.extern.slf4j.Slf4j;
 @Controller
 @RequiredArgsConstructor
 @Slf4j
-@RequestMapping("bbs/*")
+@RequestMapping("/bbs/*")
 public class BoardController {
     private final BoardService boardservice;
-
+    
     @GetMapping("list")
     public String list(
         @RequestParam(name = "kwd", defaultValue = "") String kwd,
